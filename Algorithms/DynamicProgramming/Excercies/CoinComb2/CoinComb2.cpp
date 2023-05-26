@@ -50,7 +50,7 @@ int main()
     ll n, x;
     cin >> n >> x;
 
-    vector<ll> coins(n);
+    vector<ll> coins(n + 1);
 
     FOR(i, 0, n)
     {
