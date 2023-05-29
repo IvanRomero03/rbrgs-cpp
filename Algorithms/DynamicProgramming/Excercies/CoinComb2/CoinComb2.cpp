@@ -22,22 +22,27 @@ typedef long long ll;
 typedef pair<int, int> ii;
 typedef vector<int> vi;
 
-ll Combs(int n, int x, vector<ll> &coins, vector<vector<ll>> &dp)
+int Combs(int n, int x, vector<int> &coins, vector<vector<int>> &dp)
 {
     if (dp[n][x] != -1)
     {
         return dp[n][x];
     }
-    ll suma = 0;
-    ll res;
+    if (x == 0)
+    {
+        dp[n][x] = 1;
+        return 1;
+    }
+    int suma = 0;
+    int res;
     if (coins[n] <= x)
     {
-        res = Combs(n, x - coins[n], coins, dp) % MOD;
-        suma = (suma + res) % MOD;
+        res = Combs(n, x - coins[n], coins, dp);
+        suma = res;
     }
     if (n > 0)
     {
-        res = Combs(n - 1, x, coins, dp) % MOD;
+        res = Combs(n - 1, x, coins, dp);
         suma = (suma + res) % MOD;
     }
     dp[n][x] = suma;
@@ -47,25 +52,31 @@ ll Combs(int n, int x, vector<ll> &coins, vector<vector<ll>> &dp)
 int main()
 {
     sync;
-    ll n, x;
+    auto start = chrono::high_resolution_clock::now();
+    int n, x;
     cin >> n >> x;
 
-    vector<ll> coins(n + 1);
+    vector<int> coins(n);
 
     FOR(i, 0, n)
     {
         cin >> coins[i];
     }
 
-    vector<vector<ll>> dp(n, vector<ll>(x + 1, -1));
+    // sort(coins.begin(), coins.end(), greater<>());
+    vector<vector<int>> dp(n, vector<int>(x + 1, -1));
 
-    aFor(i, dp)
-    {
-        i[0] = 1;
-    }
-    ll res = Combs(n - 1, x, coins, dp);
+    // aFor(i, dp)
+    // {
+    //     i[0] = 1;
+    // }
+    int res = Combs(n - 1, x, coins, dp);
 
     cout << res << endl;
-
+    auto end = chrono::high_resolution_clock::now();
+    double executionTime = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+    executionTime *= 1e-6;
+    cout << "Exec time: " << fixed << executionTime << setprecision(6);
+    cout << " ms " << endl;
     return 0;
 }
