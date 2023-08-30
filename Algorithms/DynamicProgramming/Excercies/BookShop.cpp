@@ -1,5 +1,4 @@
 // Rbrgs.cpp
-// Problem from: https://cses.fi/problemset/task/1158
 #include <bits/stdc++.h>
 
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
@@ -10,6 +9,11 @@
 #define MAXN 1000005
 
 #define sync ios_base::sync_with_stdio(0), cin.tie(0), cin.tie(0), cout.tie(0), cout.precision(15)
+#define FOR(i, a, b) for (int i = int(a); i < int(b); i++)
+#define RFOR(i, a, b) for (int i = int(a) - 1; i >= int(b); i--)
+#define FORC(it, cont) for (auto it = (cont).begin(); it != (cont).end(); it++)
+#define RFORC(it, cont) for (auto it = (cont).rbegin(); it != (cont).rend(); it++)
+#define aFor(i, a) for (auto &i : a)
 #define pb push_back
 
 using namespace std;
@@ -18,44 +22,50 @@ typedef long long ll;
 typedef pair<int, int> ii;
 typedef vector<int> vi;
 
-int MaxPages(int money, vector<ii> &books, vi &dp)
+int BookCombs(int x, vector<ii> &books, vi &dp)
 {
-    cout << money << endl;
-    if (dp[money] != -1)
+    if (dp[x] != -1)
     {
-        return dp[money];
+        return dp[x];
     }
     int max_pages = 0;
-    for (auto &book : books)
+    int cost = books.back().first;
+    int pages = books.back().second;
+    books.pop_back();
+
+    if (x - cost >= 0)
     {
-        if (book.first <= money)
-        {
-            max_pages = max(max_pages, MaxPages(money - book.first, books, dp) + book.second);
-        }
+        max_pages = max(max_pages, BookCombs(x - cost, books, dp) + pages);
     }
-    dp[money] = max_pages;
-    cout << max_pages << " for " << money << endl;
+    if (books.size() > 0)
+    {
+        max_pages = max(max_pages, BookCombs(x, books, dp));
+    }
+    books.push_back({cost, pages});
+
+    dp[x] = max_pages;
     return max_pages;
 }
 
 int main()
 {
     sync;
-    int n, money;
-    cin >> n >> money;
+    int n, x;
+    cin >> n >> x;
     vector<ii> books(n);
-    vi dp(money + 1, -1);
-    dp[0] = 0;
-    for (int i = 0; i < n; i++)
+    aFor(i, books)
     {
-        cin >> books[i].first;
+        cin >> i.first;
     }
-    for (int i = 0; i < n; i++)
+    aFor(i, books)
     {
-        cin >> books[i].second;
+        cin >> i.second;
     }
 
-    cout << MaxPages(money, books, dp) << endl;
+    vi dp(x + 1, -1);
+    dp[0] = 0;
+
+    cout << BookCombs(x, books, dp) << endl;
 
     return 0;
 }
