@@ -6,5 +6,6 @@ Team:
 Alejandra Coeto\
 Adán Flores\
 Iván Romero\
-Alexis Chapa
+Alexis Chapa\
+Oscar Arreola
 
