@@ -37,8 +37,13 @@ vector<int> manacher(string s)
 
 int main()
 {
-    string palindrome = "holaloh";
+    string palindrome = "aybaabtut";
     vector<int> man = manacher(palindrome);
+    for (char c : palindrome)
+    {
+        cout << "  " << c << " ";
+    }
+    cout << endl;
     for (auto i : man)
     {
         cout << i << " ";
