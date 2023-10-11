@@ -28,7 +28,7 @@ namespace SegTree
     class Cell
     {
     public:
-        int val;
+        ll val;
         int left;
         int right;
         Cell()
@@ -37,7 +37,7 @@ namespace SegTree
             left = 0;
             right = 0;
         }
-        Cell(int val, int left, int right)
+        Cell(ll val, int left, int right)
         {
             this->val = val;
             this->left = left;
@@ -49,7 +49,7 @@ namespace SegTree
     public:
         int size;
         vector<Cell> segtree; // 1 indexed
-        int build(int l, int r, int p, vi &nums)
+        ll build(int l, int r, int p, vi &nums)
         {
             if (l == r)
             {
@@ -67,17 +67,17 @@ namespace SegTree
             this->size = nums.size() - 1;
             build(0, nums.size() - 1, 1, nums);
         }
-        int getRange(int queryLeft, int queryRight)
+        ll getRange(int queryLeft, int queryRight)
         {
             return getRange(0, size, queryLeft, queryRight, 1);
         }
-        int getRange(int l, int r, int queryLeft, int queryRight, int p)
+        ll getRange(int l, int r, int queryLeft, int queryRight, int p)
         {
             if (l == queryLeft && r == queryRight)
             {
                 return segtree[p].val;
             }
-            int res = 0;
+            ll res = 0;
             int mid = (r - l) / 2 + l;
             if (queryLeft <= mid)
             {
@@ -93,7 +93,7 @@ namespace SegTree
         {
             update(0, size, updateIndex, updateValue, 1);
         }
-        int update(int l, int r, int updateIndex, int updateValue, int p)
+        ll update(int l, int r, int updateIndex, int updateValue, int p)
         {
             if (l == updateIndex && r == updateIndex)
             {
