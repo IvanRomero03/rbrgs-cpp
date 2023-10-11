@@ -89,9 +89,28 @@ namespace SegTree
             }
             return res;
         }
+        void update(int updateIndex, int updateValue)
+        {
+            update(0, size, updateIndex, updateValue, 1);
+        }
+        int update(int l, int r, int updateIndex, int updateValue, int p)
+        {
+            if (l == updateIndex && r == updateIndex)
+            {
+                segtree[p].val = updateValue;
+                return updateValue;
+            }
+            int mid = (r - l) / 2 + l;
+            if (updateIndex <= mid)
+            {
+                segtree[p].val = update(l, mid, updateIndex, updateValue, p * 2) + segtree[p * 2 + 1].val;
+                return segtree[p].val;
+            }
+            segtree[p].val = segtree[p * 2].val + update(mid + 1, r, updateIndex, updateValue, p * 2 + 1);
+            return segtree[p].val;
+        }
     };
 }
-
 using namespace SegTree;
 
 int main()
