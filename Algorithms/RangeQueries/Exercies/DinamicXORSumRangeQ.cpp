@@ -1,4 +1,5 @@
 // Rbrgs.cpp
+// problem from: https://cses.fi/problemset/task/1650/
 #include <bits/stdc++.h>
 
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
@@ -21,16 +22,22 @@ using namespace std;
 typedef long long ll;
 typedef pair<int, int> ii;
 typedef vector<int> vi;
+typedef vector<ii> vii;
 typedef vector<vi> vvi;
+typedef vector<ll> vll;
 
-// -----------------------------------------------------------------------------------------------------------------------------------
+int getXOR(int x, int y)
+{
+    return (x + y) - 2 * (x & y);
+}
+
 namespace SegTree
 {
     class Cell
     {
     public:
         // UPDATE [TYPE]
-        ll val;
+        int val;
         int left;
         int right;
         Cell()
@@ -40,7 +47,7 @@ namespace SegTree
             right = 0;
         }
         // UPDATE [TYPE]
-        Cell(ll val, int left, int right)
+        Cell(int val, int left, int right)
         {
             this->val = val;
             this->left = left;
@@ -53,7 +60,7 @@ namespace SegTree
         int size;
         vector<Cell> segtree; // 1 indexed
         // UPDATE [TYPE]
-        ll build(int l, int r, int p, vi &nums)
+        int build(int l, int r, int p, vi &nums)
         {
             if (l == r)
             {
@@ -63,7 +70,7 @@ namespace SegTree
             int mid = (r - l) / 2 + l;
             // change operation here if not a sum segtree
             // UPDATE [OPERATION]
-            segtree[p] = {build(l, mid, p * 2, nums) + build(mid + 1, r, p * 2 + 1, nums), l, r};
+            segtree[p] = {getXOR(build(l, mid, p * 2, nums), build(mid + 1, r, p * 2 + 1, nums)), l, r};
             return segtree[p].val;
         }
         SegmentTree(vi &nums)
@@ -73,12 +80,12 @@ namespace SegTree
             build(0, nums.size() - 1, 1, nums);
         }
         // UPDATE [TYPE]
-        ll getRange(int queryLeft, int queryRight)
+        int getRange(int queryLeft, int queryRight)
         {
             return getRange(0, size, queryLeft, queryRight, 1);
         }
         // UPDATE [TYPE]
-        ll getRange(int l, int r, int queryLeft, int queryRight, int p)
+        int getRange(int l, int r, int queryLeft, int queryRight, int p)
         {
             if (l == queryLeft && r == queryRight)
             {
@@ -86,17 +93,26 @@ namespace SegTree
             }
             // UPDATE [TYPE]
             // UPDATE [OPERATION]
-            ll res = 0;
+            int res = 0;
             int mid = (r - l) / 2 + l;
+            bool changed = false;
             if (queryLeft <= mid)
             {
                 // UPDATE [OPERATION]
-                res += getRange(l, mid, queryLeft, min(mid, queryRight), p * 2);
+                res = getRange(l, mid, queryLeft, min(mid, queryRight), p * 2);
+                changed = true;
             }
             if (queryRight > mid)
             {
                 // UPDATE [OPERATION]
-                res += getRange(mid + 1, r, max(queryLeft, mid + 1), queryRight, p * 2 + 1);
+                if (changed)
+                {
+                    res = getXOR(res, getRange(mid + 1, r, max(queryLeft, mid + 1), queryRight, p * 2 + 1));
+                }
+                else
+                {
+                    res = getRange(mid + 1, r, max(queryLeft, mid + 1), queryRight, p * 2 + 1);
+                }
             }
             return res;
         }
@@ -105,7 +121,7 @@ namespace SegTree
             update(0, size, updateIndex, updateValue, 1);
         }
         // UPDATE [TYPE]
-        ll update(int l, int r, int updateIndex, int updateValue, int p)
+        int update(int l, int r, int updateIndex, int updateValue, int p)
         {
             if (l == updateIndex && r == updateIndex)
             {
@@ -116,40 +132,35 @@ namespace SegTree
             if (updateIndex <= mid)
             {
                 // UPDATE [OPERATION]
-                segtree[p].val = update(l, mid, updateIndex, updateValue, p * 2) + segtree[p * 2 + 1].val;
+                segtree[p].val = getXOR(update(l, mid, updateIndex, updateValue, p * 2), segtree[p * 2 + 1].val);
                 return segtree[p].val;
             }
             // UPDATE [OPERATION]
-            segtree[p].val = segtree[p * 2].val + update(mid + 1, r, updateIndex, updateValue, p * 2 + 1);
+            segtree[p].val = getXOR(segtree[p * 2].val, update(mid + 1, r, updateIndex, updateValue, p * 2 + 1));
             return segtree[p].val;
         }
     };
 }
 using namespace SegTree;
-// -----------------------------------------------------------------------------------------------------------------------------
+
 int main()
 {
     sync;
-    vi nums = {1, 2, 3, 4, 5};
-    SegmentTree seg(nums);
-    int ceroCeroed = 0;
-    for (Cell &it : seg.segtree)
+    int n, q;
+    cin >> n >> q;
+    vi nums(n);
+    for (int &i : nums)
     {
-        if (it.left == 0 && it.right == 0)
-        {
-            if (ceroCeroed == 2)
-            {
-                break;
-            }
-            ceroCeroed++;
-        }
-        cout << "{ l: " << it.left << ", r: " << it.right << " -> " << it.val << " } ";
+        cin >> i;
     }
-    cout << endl;
-    vvi ranges = {{0, 2}, {0, 1}, {1, 1}, {0, 4}, {3, 4}};
-    for (vi &range : ranges)
+    SegmentTree seg(nums);
+    int a, b;
+    for (int i = 0; i < q; i++)
     {
-        cout << "Range [ " << range[0] << " : " << range[1] << " ] -> " << seg.getRange(range[0], range[1]) << endl;
+        cin >> a >> b;
+        a--;
+        b--;
+        cout << seg.getRange(a, b) << endl;
     }
     return 0;
 }
