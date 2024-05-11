@@ -40,30 +40,61 @@ typedef pair<int, int> ii;
 typedef vector<int> vi;
 typedef vector<ii> vii;
  
-#define MAXN 10
+#define MAXN 100000
 #define MOD 1000000007
  
+// Single source shortest paths
 
-#include <bits/stdc++.h>
-#define INF (1 << 30)
+vector<vii> graph(MAXN);
+vector<bool> visited(MAXN, false);
+vector<int> path(MAXN);
+vi dist(MAXN, INF);
 
-vector<vii> graph;
+// Careful with long long & infinite val
+void dijkstra(int n) {
+    priority_queue< ii, vii, greater<ii>> pq;
+    pq.push({0,n});
+    dist[n] = 0;
 
-void dijkstra(int v, int s) {
-	vi dist(v, INF); dist[s] = 0; // INF = 1B to avoid overflow 
-	priority_queue< ii, vector<ii>, greater<ii> > pq; pq.push(ii(0, s)); while (!pq.empty()) { // main loop
-	ii front = pq.top(); pq.pop(); // greedy: get shortest unvisited vertex 
-	int d = front.first, u = front.second;
-	if (d > dist[u]) continue; // this is a very important check 
-	for (int j = 0; j < (int)graph[u].size(); j++) {
-	ii v = graph[u][j]; // all outgoing edges from u 
-	if (dist[u] + v.second < dist[v.first]) {
-	dist[v.first] = dist[u] + v.second; // relax operation
-	pq.push(ii(dist[v.first], v.first));
-	} } } // this variant can cause duplicate items in the priority queue
+    while (!pq.empty()) {
+        ii front = pq.top();
+        pq.pop();
+        if (visited[front.second]) continue;
+        visited[front.second] = true;
+
+        for (auto i : graph[front.second]) {
+            if (dist[front.second] + i.second < dist[i.first]) {
+                dist[i.first] = dist[front.second] + i.second;
+                path[i.first] = front.second;
+                pq.push({dist[i.first], i.first});
+            }
+        }
+
+    }
+
 }
 
 int main() { _
+    
+    graph[1].pb({2,1});
+    graph[1].pb({3,6});
+    vii e = {{3,2},{4,1}};
+    graph[2] = e;
+    vii f = {{1,6},{2,2},{4,1}};
+    graph[3] = f;
+    vii x = {{2,1},{3,2},{5,5}};
+    graph[4] = x;
+    vii a = {{3,5},{4,5}};
+    graph[5] = a;
+    
+
+    dijkstra(1);
+
+    for (int i = 1; i < 6; i++) {
+        cout << i << " : " ;
+        cout << dist[i] << ", ";
+        cout << path[i] << " / ";
+    }
 
 	return 0;
 }
