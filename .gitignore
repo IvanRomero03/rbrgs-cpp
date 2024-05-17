@@ -1,6 +1,6 @@
 .vscode/c_cpp_properties.json
 **/**.exe
-.vscode
+.vscode/**
 Meta-Coding-Cup
 Entrenamiento
 CodeForces
