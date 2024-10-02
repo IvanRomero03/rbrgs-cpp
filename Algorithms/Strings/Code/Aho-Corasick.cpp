@@ -9,7 +9,6 @@ const int size_of_alphabet = 17;
 
 int from_char_to_value(char c)
 {
-    // return c - 'a';
     if (c - '0' >= 0 && c - '0' <= 9)
     {
         return c - '0';
@@ -71,7 +70,6 @@ public:
     }
     int from_char_to_value(char c)
     {
-        // return c - 'a';
         if (c - '0' >= 0 && c - '0' <= 9)
         {
             return c - '0';
@@ -85,7 +83,6 @@ public:
     {
         if (i == s.size())
         {
-            // cout << "adding " << s[i] << endl;
             node->isEndOfWord = true;
             node->endOfWord = s;
             return;
@@ -110,7 +107,6 @@ public:
         }
         if (node->failure == node)
         {
-            // cout << "aki " << node->value << endl;
             node->failure = &this->root;
         }
         for (auto n : node->childs)
@@ -130,7 +126,6 @@ public:
                 CalcFailureHelper(n);
             }
         }
-        // CalcFailureHelper(&root);
     }
     AhoCorasick(vector<string> &dict)
     {
@@ -158,13 +153,10 @@ public:
 
     void helper(string &s, int i, unordered_map<string, vi> &res, queue<TrieNode *> &q)
     {
-        // cout << i;
         if (i == s.size())
         {
-            // cout << endl;
             return;
         }
-        // cout << " " << s[i] << endl;
         int n = q.size();
         TrieNode *node;
         int value = from_char_to_value(s[i]);
@@ -180,7 +172,6 @@ public:
                 {
                     if (transition->isEndOfWord)
                     {
-                        // cout << i << " : " << transition->value << " " << transition->endOfWord << endl;
                         res[transition->endOfWord].push_back(i + 1 - transition->endOfWord.size());
                     }
                     q.push(transition);
@@ -192,24 +183,10 @@ public:
         {
             if (root.childs[value]->isEndOfWord)
             {
-                // cout << i << " : " << root.childs[value]->value << " " << root.childs[value]->endOfWord << endl;
                 res[root.childs[value]->endOfWord].push_back(i + 1 - root.childs[value]->endOfWord.size());
             }
             q.push(root.childs[value]);
         }
-        // TrieNode *transition = getTransition(&root, value);
-        // if (visited.find(transition) == visited.end())
-        // {
-        //     if (transition != &root)
-        //     {
-        //         if (transition->isEndOfWord)
-        //         {
-        //             cout << i << " : " << transition->value << " " << transition->endOfWord << endl;
-        //             res[transition->endOfWord].push_back(i - transition->endOfWord.size());
-        //         }
-        //         q.push(transition);
-        //     }
-        // }
         helper(s, i + 1, res, q);
     }
     unordered_map<string, vi> findFindings(string &text)
@@ -225,7 +202,6 @@ int main()
 {
     vector<string> dict = {"AF09", "AAB", "BBC0", "BBC", "AAA"};
     AhoCorasick aho(dict);
-    // cout << aho.root.childs[from_char_to_value('A')]->childs[from_char_to_value('A')]->isEndOfWord << endl;
     string text = "AABBC0AF09BBC0AAA";
     cout << text << endl;
     unordered_map<string, vi> res = aho.findFindings(text);
