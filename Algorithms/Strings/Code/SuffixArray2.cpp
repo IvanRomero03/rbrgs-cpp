@@ -6,6 +6,7 @@
 
 #define sync ios_base::sync_with_stdio(0), cin.tie(0), cin.tie(0), cout.tie(0), cout.precision(15)
 #define aFor(i, a) for (auto &i : a)
+#define ffor(i, n) for (int i = 0; i < n; i++)
 #define pb push_back
 
 using namespace std;
@@ -16,8 +17,6 @@ typedef vector<int> vi;
 typedef vector<ii> vii;
 typedef vector<vi> vvi;
 typedef vector<ll> vll;
-
-const int n = 1, log_n = 1;
 
 vector<int> sort_cyclic_shifts(string const &s)
 {
@@ -75,43 +74,6 @@ vector<int> suffix_array_construction(string s)
     vector<int> sorted_shifts = sort_cyclic_shifts(s);
     sorted_shifts.erase(sorted_shifts.begin());
     return sorted_shifts;
-}
-
-int compare(int i, int j, int l, int k)
-{
-    pair<int, int> a = {c[k][i], c[k][(i + l - (1 << k)) % n]};
-    pair<int, int> b = {c[k][j], c[k][(j + l - (1 << k)) % n]};
-    return a == b ? 0 : a < b ? -1
-                              : 1;
-}
-
-int lcp(int i, int j)
-{
-    int ans = 0;
-    for (int k = log_n; k >= 0; k--)
-    {
-        if (c[k][i % n] == c[k][j % n])
-        {
-            ans += 1 << k;
-            i += 1 << k;
-            j += 1 << k;
-        }
-    }
-    return ans;
-}
-
-vector<int> suffixArrayNaive(string S)
-{
-    int n = S.length() + 1;
-    vector<string> sa;
-    vector<int> A(n);
-    S = S + "$";
-    for (int i = 0; i < n; i++)
-        sa.push_back(S.substr(n - i - 1, i + 1));
-    sort(sa.begin(), sa.end());
-    for (int i = 0; i < n; i++)
-        A[i] = n - sa[i].size() + 1;
-    return A;
 }
 
 int main()
